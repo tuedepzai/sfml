@@ -3,10 +3,11 @@
 
 #include "sfml.h"
 
-using namespace std;
-
 int main()
 {
-	cout << "Hello CMake." << endl;
+	sf::Window window(sf::VideoMode(800, 600), "My Window!");
+
+
+
 	return 0;
 }
