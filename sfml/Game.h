@@ -12,10 +12,15 @@ private:
 	sf::RenderWindow* window;
 	sf::Event ev;
 	sf::VideoMode videoMode;
+	
+	//Game objects
+	sf::RectangleShape enemy;
+
+
 
 	void initVariables();
 	void initWindow();
-
+	void initEnemies();
 public:
 	//Constructors / Destrustors
 	Game();
