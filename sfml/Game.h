@@ -15,12 +15,22 @@ private:
 	
 	//Game objects
 	sf::RectangleShape enemy;
+	std::vector<sf::RectangleShape> enemies;
+
+	sf::Vector2i MouseposWindow;
+
+	//Game logic
+	int points;
+	float enemySpawnTimer;
+	float enemySpawnTimerMax;
+	int maxEnemies;
 
 
 
 	void initVariables();
 	void initWindow();
 	void initEnemies();
+
 public:
 	//Constructors / Destrustors
 	Game();
@@ -33,7 +43,13 @@ public:
 	//Functions
 	void update();
 	void render();
-	
+
+	void spawnEnemy();
+	void updateEnemies();
+	void renderEnemies();
+
+
+	void updateMousepos();
 
 
 };

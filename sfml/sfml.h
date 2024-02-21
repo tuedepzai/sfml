@@ -7,4 +7,6 @@
 #include "SFML/Window.hpp"
 #include "SFML/Graphics.hpp"
 #include "Game.h"
+#include <vector>
+#include <ctime>
 // TODO: Reference additional headers your program requires here.
