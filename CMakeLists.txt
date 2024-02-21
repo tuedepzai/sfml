@@ -11,5 +11,11 @@ endif()
 
 project ("sfml")
 
+
+
 # Include sub-projects.
 add_subdirectory ("sfml")
+add_subdirectory ("sfml/Lib")
+#provide include path
+
+

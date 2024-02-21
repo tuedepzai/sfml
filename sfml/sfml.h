@@ -6,4 +6,5 @@
 #include <iostream>
 #include "SFML/Window.hpp"
 #include "SFML/Graphics.hpp"
+#include "Game.h"
 // TODO: Reference additional headers your program requires here.
