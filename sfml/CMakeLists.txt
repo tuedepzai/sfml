@@ -12,5 +12,5 @@ endif()
 # TODO: Add tests and install targets if needed.
 
 
-target_link_libraries(${PROJECT_NAME} PRIVATE sfml-system sfml-network sfml-graphics sfml-window)
+target_link_libraries(${PROJECT_NAME} PRIVATE sfml-system sfml-network sfml-graphics sfml-window sfml-audio)
 target_link_libraries(${PROJECT_NAME} PRIVATE Game)

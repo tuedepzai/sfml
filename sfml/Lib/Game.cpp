@@ -1,3 +1,6 @@
+#include "Game.h"
+#include "Game.h"
+#include "Game.h"
 #include "sfml.h"
 
 //Funcitons//
@@ -5,10 +8,11 @@
 void Game::initVariables()
 {
 	this->window = nullptr;
-	this->points = 0;
+	this->Points = 0;
 	this->enemySpawnTimer = 0.f;
 	this->enemySpawnTimerMax = this->enemySpawnTimerMax;
 	this->maxEnemies = 5;
+	this->PointsPerEnemy = 5;
 }
 
 void Game::initWindow()
@@ -50,6 +54,7 @@ void Game::update()
 	this->PollEvent();
 	this->updateMousepos();
 	this->updateEnemies();
+
 	//Update mouse pos
 	//Relative to the screen
 	//std::cout << "Mouse pos: " << sf::Mouse::getPosition().x << " "<< sf::Mouse::getPosition().y << '\n';
@@ -76,6 +81,7 @@ const bool Game::running() const
 void Game::updateMousepos()
 {
 	this->MouseposWindow = sf::Mouse::getPosition(*this->window);
+	this->MousePosView = this->window->mapPixelToCoords(this->MouseposWindow);
 }
 
 void Game::spawnEnemy()
@@ -120,9 +126,28 @@ void Game::updateEnemies()
 		}
 	}
 
-	for (auto &enemy : this->enemies)
+	for (int i = 0; i< this->enemies.size(); ++i)
 	{
-		enemy.move(0.f, 5.f);
+		
+
+		this->enemies[i].move(0.f, 1.f);
+		
+		bool deleted = false;
+		//Checked if clicked
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+			if (this->enemies[i].getGlobalBounds().contains(this->MousePosView)) {
+				this->LoadAndPlaySound("C:/Users/doget/source/repos/sfml/sfml/Assets/click.wav");
+				++this->Points;
+				deleted = true;
+			}
+		}
+
+		if (this->enemies[i].getPosition().y > this->window->getSize().y) {
+			deleted = true;
+		}
+
+		if(deleted) this->enemies.erase(this->enemies.begin() + i);
+
 	}
 }
 
@@ -133,6 +158,21 @@ void Game::renderEnemies()
 		this->window->draw(enemy);
 	}
 }
+
+sf::SoundBuffer soundBuffer;
+sf::Sound sound;
+void Game::LoadAndPlaySound(std::string FilePath) {
+	if (!soundBuffer.loadFromFile(FilePath)) {
+		std::cout << "Error loading sound file from: " << FilePath << std::endl;
+		return;
+	}
+
+	// Set the sound buffer and play the sound
+	sound.setBuffer(soundBuffer);
+	sound.setVolume(100);
+	sound.play();
+}
+
 
 void Game::PollEvent()
 {

@@ -8,23 +8,27 @@
 class Game {
 private:
 	//Vars
+	int Points;
+	int PointsPerEnemy;
+
 	//Window
 	sf::RenderWindow* window;
 	sf::Event ev;
 	sf::VideoMode videoMode;
+
 	
 	//Game objects
 	sf::RectangleShape enemy;
 	std::vector<sf::RectangleShape> enemies;
 
 	sf::Vector2i MouseposWindow;
-
+	sf::Vector2f MousePosView;
 	//Game logic
-	int points;
 	float enemySpawnTimer;
 	float enemySpawnTimerMax;
 	int maxEnemies;
 
+	//Sound stuff
 
 
 	void initVariables();
@@ -50,6 +54,8 @@ public:
 
 
 	void updateMousepos();
+
+	void LoadAndPlaySound(std::string FilePath);
 
 
 };
