@@ -1,6 +1,12 @@
 #include "Game.h"
 #include "Game.h"
 #include "Game.h"
+#include "Game.h"
+#include "Game.h"
+#include "Game.h"
+#include "Game.h"
+#include "Game.h"
+#include "Game.h"
 #include "sfml.h"
 
 //Funcitons//
@@ -13,6 +19,9 @@ void Game::initVariables()
 	this->enemySpawnTimerMax = this->enemySpawnTimerMax;
 	this->maxEnemies = 5;
 	this->PointsPerEnemy = 5;
+	this->MouseHeld = false;
+	this->Health = 10;
+	this->endGame = false;
 }
 
 void Game::initWindow()
@@ -39,6 +48,8 @@ Game::Game()
 	this->initVariables();
 	this->initWindow();
 	this->initEnemies();
+	this->initFonts();
+	this->initText();
 }
 
 Game::~Game()
@@ -52,15 +63,26 @@ Game::~Game()
 void Game::update()
 {
 	this->PollEvent();
-	this->updateMousepos();
-	this->updateEnemies();
+
 
 	//Update mouse pos
 	//Relative to the screen
 	//std::cout << "Mouse pos: " << sf::Mouse::getPosition().x << " "<< sf::Mouse::getPosition().y << '\n';
 	//Relative to the winow
 
-	std::cout << "Mouse pos" << this->MouseposWindow.x << " " << this->MouseposWindow.y << '\n';
+	//std::cout << "Mouse pos" << this->MouseposWindow.x << " " << this->MouseposWindow.y << '\n';
+
+	if (!this->endGame) {
+		this->updateMousepos();
+		this->updateEnemies();
+		this->updateText();
+	}
+	//end game condition
+	if (this->Health <= 0) {
+		this->endGame = true;
+	}
+
+
 }
 
 void Game::render()
@@ -69,13 +91,48 @@ void Game::render()
 	
 
 	//Draw game objects
-	this->renderEnemies();
+	this->renderEnemies(*this->window);
+	this->renderText(*this->window);
 	this->window->display();
 }
 
 const bool Game::running() const
 {
 	return this->window->isOpen();
+}
+
+const bool Game::getEndGame() const
+{
+	return this->endGame;
+}
+
+void Game::initFonts()
+{
+	if (!this->font.loadFromFile("C:/Users/doget/source/repos/sfml/sfml/Assets/8-bit Arcade In.ttf")) {
+		std::cout << "failed to load from" << '\n';
+	}
+}
+
+
+void Game::renderText(sf::RenderTarget& target)
+{
+	target.draw(this->UiText);
+}
+
+void Game::updateText()
+{
+	std::stringstream ss;
+
+	ss << "Points " << this->Points << "\n"
+		<< "Health " << this->Health;
+	this->UiText.setString(ss.str());
+}
+
+void Game::initText() {
+	this->UiText.setFont(this->font);
+	this->UiText.setCharacterSize(30);
+	this->UiText.setFillColor(sf::Color::White);
+	this->UiText.setString("NULL");
 }
 
 void Game::updateMousepos()
@@ -104,6 +161,8 @@ void Game::spawnEnemy()
 	this->enemies.emplace_back(this->enemy);
 }
 
+
+
 void Game::updateEnemies()
 {
 	/*
@@ -129,33 +188,50 @@ void Game::updateEnemies()
 	for (int i = 0; i< this->enemies.size(); ++i)
 	{
 		
-
+		//this->LoadAndPlaySound("C:/Users/doget/source/repos/sfml/sfml/Assets/click.wav");
 		this->enemies[i].move(0.f, 1.f);
-		
-		bool deleted = false;
-		//Checked if clicked
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-			if (this->enemies[i].getGlobalBounds().contains(this->MousePosView)) {
-				this->LoadAndPlaySound("C:/Users/doget/source/repos/sfml/sfml/Assets/click.wav");
-				++this->Points;
-				deleted = true;
-			}
-		}
 
 		if (this->enemies[i].getPosition().y > this->window->getSize().y) {
-			deleted = true;
+			this->enemies.erase(this->enemies.begin() + i);
+			this->Health--;
 		}
 
-		if(deleted) this->enemies.erase(this->enemies.begin() + i);
-
 	}
+
+	//Checked if clicked
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+		bool deleted = false;
+
+		if (this->MouseHeld == false)
+		{
+			this->MouseHeld = true;
+			for (size_t i = 0; i < this->enemies.size() && deleted == false; i++)
+			{
+
+				if (this->enemies[i].getGlobalBounds().contains(this->MousePosView)) {
+					this->enemies.erase(this->enemies.begin() + i);
+					this->LoadAndPlaySound("C:/Users/doget/source/repos/sfml/sfml/Assets/click.wav");
+					++this->Points;
+					deleted = true;
+
+					std::cout << "Points " << this->Points << " " << "HEALTH: " << this->Health << '\n';
+				}
+
+			}
+		}
+	}
+	else{
+		this->MouseHeld = false;
+	}
+
+
 }
 
-void Game::renderEnemies()
+void Game::renderEnemies(sf::RenderTarget& target)
 {
 	for (auto &enemy : this->enemies)
 	{
-		this->window->draw(enemy);
+		target.draw(enemy);
 	}
 }
 

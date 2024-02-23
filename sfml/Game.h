@@ -10,6 +10,9 @@ private:
 	//Vars
 	int Points;
 	int PointsPerEnemy;
+	bool MouseHeld;
+	int Health;
+	bool endGame;
 
 	//Window
 	sf::RenderWindow* window;
@@ -23,6 +26,8 @@ private:
 
 	sf::Vector2i MouseposWindow;
 	sf::Vector2f MousePosView;
+
+	sf::Text UiText;
 	//Game logic
 	float enemySpawnTimer;
 	float enemySpawnTimerMax;
@@ -34,6 +39,7 @@ private:
 	void initVariables();
 	void initWindow();
 	void initEnemies();
+	void initText();
 
 public:
 	//Constructors / Destrustors
@@ -44,14 +50,21 @@ public:
 	const bool running() const;
 	void PollEvent();
 
+	const bool getEndGame() const;
+
+	//Assets
+	sf::Font font;
+
 	//Functions
 	void update();
 	void render();
 
 	void spawnEnemy();
 	void updateEnemies();
-	void renderEnemies();
-
+	void renderEnemies(sf::RenderTarget& target);
+	void renderText(sf::RenderTarget& target);
+	void updateText();
+	void initFonts();
 
 	void updateMousepos();
 
